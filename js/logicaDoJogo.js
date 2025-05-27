@@ -23,9 +23,10 @@ export function startGame() {
                 inseridoComSucesso = true;
             }
         }
-        //tabuleiro.renderizarTabuleiroDOM()
-    });
 
+    });
+    // Limpa o campo de entrada e habilita o botão de atirar
+   // Função utilitária para testar todas as células do grid (para debug)
 
 
     const entradaCoordenada = document.getElementById('coordenadaInput');
@@ -40,6 +41,56 @@ export function startGame() {
     jogoAtivo = true;
     console.log("Jogo iniciado e pronto.");
 }
+// Uso exclusivo para debug, não deve ser usado em produção
+export function debugGame(){
+    function testarTodasCelulas() {
+        if (!jogoTabuleiro) {
+            console.error("Tabuleiro não inicializado.");
+            return;
+        }
+        for (let linha = 0; linha < 10; linha++) {
+            for (let coluna = 0; coluna < 10; coluna++) {
+                jogoTabuleiro.processarTiro(linha, coluna);
+            }
+        }
+        alert("Todas as células foram testadas!");}
+
+    console.log("Iniciando novo jogo...");
+    jogoTabuleiro = new Tabuleiro(); // Cria nova instância, que também renderiza o DOM
+    const naviosParaPosicionar = criarFrota();
+
+    naviosParaPosicionar.forEach(navio => {
+        let inseridoComSucesso = false;
+        while (!inseridoComSucesso) {
+            const orientacaoIndex = Math.floor(Math.random() * 2);
+            navio.setOrientacao(["horizontal", "vertical"][orientacaoIndex]);
+
+            const linhaInicial = Math.floor(Math.random() * 10);
+            const colunaInicial = Math.floor(Math.random() * 10);
+
+            if (verificarPosicaoValida(jogoTabuleiro, navio, linhaInicial, colunaInicial)) {
+                posicionarNavioNoTabuleiro(jogoTabuleiro, navio, linhaInicial, colunaInicial);
+                inseridoComSucesso = true;
+            }
+        }
+
+    });
+
+    const entradaCoordenada = document.getElementById('coordenadaInput');
+    if (entradaCoordenada) {
+        entradaCoordenada.value = '';
+        entradaCoordenada.disabled = false;
+        entradaCoordenada.focus();
+    }
+    const botaoAtirar = document.querySelector('.input-container button');
+    if (botaoAtirar) botaoAtirar.disabled = false;
+    // Testa todas as células do grid
+    testarTodasCelulas()
+    jogoAtivo = true;
+    // Testa todas as células do grid para debug
+    console.log("Jogo iniciado e pronto.");
+}
+//
 
 export function reiniciarJogo() {
     console.log("Reiniciando o jogo...");
