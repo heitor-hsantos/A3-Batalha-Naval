@@ -8,21 +8,6 @@ export class Tabuleiro {
         this.renderizarTabuleiroDOM();
     }
 
-    previewTabuleiroDebug() {
-        console.log("Tabuleiro (Lógica Interna):");
-        for (let i = 0; i < 10; i++) {
-            let linhaStr = "";
-            for (let j = 0; j < 10; j++) {
-                const celula = this.tabuleiro[i][j];
-                if (celula === 0) {
-                    linhaStr += "0  "; // Água
-                } else if (celula instanceof Navio) {
-                    linhaStr += `${celula.nome.substring(0,1)}  `; // Primeira letra do nome do navio
-                }
-            }
-            console.log(linhaStr.trim());
-        }
-    }
 
     criaMatrizLogica() {
         this.tabuleiro = [];

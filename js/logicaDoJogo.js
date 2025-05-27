@@ -23,9 +23,10 @@ export function startGame() {
                 inseridoComSucesso = true;
             }
         }
+        //tabuleiro.renderizarTabuleiroDOM()
     });
 
-    jogoTabuleiro.previewTabuleiroDebug(); // Opcional: para depuração
+
 
     const entradaCoordenada = document.getElementById('coordenadaInput');
     if (entradaCoordenada) {

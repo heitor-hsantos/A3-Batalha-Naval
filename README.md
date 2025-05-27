@@ -1,5 +1,5 @@
 # A3-Batalha-Naval
-<p>
+
  Batalha Naval <br>
 Projeto da disciplina de Estruturas Matemáticas da Universidade Anhembi Morumbi(UAM)
 
@@ -14,7 +14,7 @@ O objetivo do jogo é descobrir onde estão essas embarcações e acertá-las.
 
 O jogo só acaba quando você descobrir 5 embarcações ou se o oponente destruir suas embarcações.
 
-</p>
+
 <div style="display: inlineblock"><br>
 <h1> Tecnologias usadas no projeto </h1>
 <div align="left">
