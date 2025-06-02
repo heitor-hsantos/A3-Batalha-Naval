@@ -1,45 +1,611 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>Batalha Naval</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 50px;
+            background-color: #f8f8f8;
+            box-sizing: border-box;
+            position: relative;
+            min-height: 100vh;
+            text-align: center;
+        }
+
+        h1 {
+            margin-top: 20px;
+            margin-bottom: 10px;
+            color: #000000;
+        }
+
+        .main-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            padding: 40px;
+            gap: 40px;
+        }
+
+        .instrucoes {
+            flex: 1;
+            max-width: 400px;
+            padding-right: 40px;
+        }
+
+        .instrucoes h3 {
+            color: #000000;
+            margin-top: 0;
+        }
+
+        .instrucoes p {
+            color: #000000;
+            line-height: 1.4em;
+            text-align: left;
+        }
+
+        .jogo {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .tabuleiros {
+            display: flex;
+            justify-content: flex-start; 
+            gap: 40px;
+            margin-top: 20px;
+        }
+
+        .tabuleiro {
+            display: inline-block;
+        }
+
+        .tabuleiro h2 {
+            margin-bottom: 10px;
+            color: #000000;
+        }
+
+        .grade {
+            display: grid;
+            grid-template-columns: repeat(11, 45px);
+            grid-template-rows: repeat(11, 45px);
+            gap: 2px;
+            background-color: #2744a3ce;
+            padding: 5px;
+            border-radius: 6px;
+            border: 3px solid #000000;
+            user-select: none;
+        }
+
+        .rotulo {
+            width: 45px;
+            height: 45px;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            box-sizing: border-box;
+            background-color: #2744a3ce;
+            color: #000000;
+        }
+
+        .celula {
+            width: 45px;
+            height: 45px;
+            background-color: #ffffff;
+            border-radius: 3px;
+            border: 1px solid #2744a3ce;
+            cursor: crosshair;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .navio {
+            background-color: rgba(136, 136, 136, 0.7);
+        }
+
+        .tiro-agua {
+            background-color: #007bff;
+            background-blend-mode: multiply;
+        }
+
+        .tiro-acerto {
+            background-color: #dc3545;
+            background-image: url('https://static.thenounproject.com/png/1597472-200.png');
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain;
+            cursor: default;
+        }
+
+        .input-container {
+            margin-top: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .input-container input {
+            padding: 8px;
+            font-size: 16px;
+            width: 100px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .status {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 1.2em;
+            color: #000000;
+            position: relative;
+            z-index: 1;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 1em;
+            background-color: #2744a3ce;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            position: relative;
+            z-index: 1;
+        }
+
+        button:hover {
+            background-color: #1c3380; /* do primeiro bloco, achei melhor que repetir o azul */
+        }
+
+        .container-principal {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 40px;
+        }
+
+        .instrucoes-jogo {
+            max-width: 400px;
+            text-align: left;
+            color: #000;
+            font-size: 15px;
+            background: transparent;
+            padding: 20px;
+            border: none;
+            box-shadow: none;
+        }
+
+        #telaInicial {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.95);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        #telaInicial h2 {
+            color: #000000;
+            margin-bottom: 20px;
+        }
+
+        #telaInicial p {
+            text-align: left;
+            max-width: 500px;
+            margin-bottom: 20px;
+            color: #000000;
+            line-height: 1.4em;
+        }
+
+        #btnComecar {
+            padding: 12px 25px;
+            font-size: 1.1em;
+            background-color: #2744a3ce;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #btnComecar:hover {
+            background-color: #1c3380;
+        }
+
+    </style>
 </head>
 <body>
-<div>
-    <h1>Batalha Naval</h1>
 
-    <table class="tabuleiro">
-        <thead>
-        <tr>
-            <th></th>
-            <th>A</th>
-            <th>B</th>
-            <th>C</th>
-            <th>D</th>
-            <th>E</th>
-            <th>F</th>
-            <th>G</th>
-            <th>H</th>
-            <th>I</th>
-            <th>J</th>
-        </tr>
-        </thead>
-        <tbody>
+<h1>Batalha Naval</h1>
 
-        </tbody>
+<div id="telaInicial">
+    <h3>🛳️ Regras do Jogo Batalha Naval – Explorando Matrizes</h3>
+    <p>
+        O <strong>Batalha Naval</strong> é um jogo de estratégia entre dois jogadores que usam um
+        <strong>tabuleiro dividido em linhas e colunas</strong>, formando uma <strong>matriz</strong>.
+        É uma ótima maneira de aprender sobre <em>posições em matrizes</em> e o <em>plano cartesiano</em>! <br />
+        O objetivo é <strong>descobrir e afundar todos os navios do adversário</strong>
+        antes que ele afunde os seus!
+    </p>
+    <h3>📐 O Tabuleiro</h3>
+    <p>
+        O tabuleiro tem o formato de uma <strong>matriz 10x10</strong>. Cada quadradinho no tabuleiro é chamado de <strong>célula</strong> e representa uma
+        <strong>posição</strong>, como em uma matriz. <br />
+        <strong>Exemplos:</strong><br />
+        – A1 → primeira coluna, primeira linha<br />
+        – C5 → terceira coluna, quinta linha<br />
+    </p>
+    <h3>🧩 Como Jogar</h3>
+    <p>
+        <strong>Posicionar os navios:</strong>
+        Os navios são colocados horizontalmente ou verticalmente, ocupando posições consecutivas da matriz. <br />
+        <strong>Atacar:</strong>
+        Os jogadores se alternam para “atacar” uma posição do tabuleiro adversário.
+        Para isso, informam uma coordenada como, por exemplo, <code>D4</code>. <br />
+        <strong>Resultado do ataque:</strong> <br />
+        - Se houver um navio naquela posição → <strong>acerto (Fogo!)</strong><br />
+        - Se não houver navio → <strong>erro (Água!)</strong><br />
+        - Quando todas as posições de um navio forem atingidas, ele é afundado.<br />
+        <strong>Vitória:</strong><br />
+        Vence quem primeiro destruir todos os navios do oponente.
+    </p>
+    <button id="btnComecar">Começar</button>
+</div>
 
-    </table>
+<div class="container-principal">
 
-    <div class="input-container">
-        <label for="coordenadaInput">Atirar em (ex: A1, J10):</label>
-        <input type="text" id="coordenadaInput" placeholder="Ex: B4" maxlength="3">
-        <button onclick="atirar()">Atirar!</button>
+    <div class="instrucoes-jogo">
+        <h3>🛳️ Regras do Jogo Batalha Naval – Explorando Matrizes</h3>
+        <p>
+            O <strong>Batalha Naval</strong> é um jogo de estratégia entre dois jogadores que usam um
+            <strong>tabuleiro dividido em linhas e colunas</strong>, formando uma <strong>matriz</strong>.
+            É uma ótima maneira de aprender sobre <em>posições em matrizes</em> e o <em>plano cartesiano</em>!<br />
+            O objetivo é <strong>descobrir e afundar todos os navios do adversário</strong> antes que ele afunde os seus!
+        </p>
+        <h3>📐 O Tabuleiro</h3>
+        <p>
+            O tabuleiro tem o formato de uma <strong>matriz 10x10</strong>. Cada quadradinho no tabuleiro é chamado de <strong>célula</strong> e representa uma <strong>posição</strong>, como em uma matriz.<br />
+            <strong>Exemplos:</strong><br />
+            – A1 → primeira coluna, primeira linha<br />
+            – C5 → terceira coluna, quinta linha
+        </p>
+        <h3>🧩 Como Jogar</h3>
+        <p>
+            <strong>Posicionar os navios:</strong> Os navios são colocados horizontalmente ou verticalmente, ocupando posições consecutivas da matriz.<br />
+            <strong>Atacar:</strong> Os jogadores se alternam para “atacar” uma posição do tabuleiro adversário. Para isso, informam uma coordenada como, por exemplo, <code>D4</code>.<br />
+            <strong>Resultado do ataque:</strong><br />
+            – Se houver um navio naquela posição → <strong>acerto (Fogo!)</strong><br />
+            – Se não houver navio → <strong>erro (Água!)</strong><br />
+            – Quando todas as posições de um navio forem atingidas, ele é afundado.<br />
+            <strong>Vitória:</strong><br />
+            Vence quem primeiro destruir todos os navios do oponente.
+        </p>
     </div>
 
-    <button onclick="reiniciarJogo()" style="margin-top: 15px;">Novo Jogo</button>
-    <script type="module" src="js/script.js"></script>
+    <div class="jogo">
+
+        <div class="tabuleiros">
+            <div class="tabuleiro">
+                <h2>Seu Tabuleiro</h2>
+                <div class="grade" id="grade-jogador"></div>
+            </div>
+            <div class="tabuleiro">
+                <h2>Tabuleiro do Oponente</h2>
+                <div class="grade" id="grade-oponente"></div>
+            </div>
+        </div>
+
+        <div class="input-container">
+            <label for="coordenadaInput">Atirar em (ex: A1):</label><br />
+            <input type="text" id="coordenadaInput" placeholder="Ex: B4" maxlength="3" />
+            <button onclick="atirar()">Atirar!</button>
+        </div>
+
+        <div class="status" id="status">Posicione os navios (feito automaticamente)</div>
+        <button onclick="iniciarJogo()">Reiniciar Jogo</button>
+
+    </div>
+
 </div>
+
+<script>
+    const linhas = 10;
+    const colunas = 10;
+
+    const letras = ['A','B','C','D','E','F','G','H','I','J'];
+
+    let matrizJogador = [];
+    let matrizOponente = [];
+
+    const gradeJogador = document.getElementById('grade-jogador');
+    const gradeOponente = document.getElementById('grade-oponente');
+
+    const status = document.getElementById('status');
+
+    const telaInicial = document.getElementById('telaInicial');
+    const btnComecar = document.getElementById('btnComecar');
+
+    const btnReiniciar = document.getElementById('reiniciar');
+
+    let turnoJogador = true;
+
+    function criarGradeComRotulos() {
+        const grade = document.createElement('div');
+        grade.classList.add('grade');
+
+        for(let linha = 0; linha <= linhas; linha++) {
+            for(let coluna = 0; coluna <= colunas; coluna++) {
+                const celula = document.createElement('div');
+
+                if(linha === 0 && coluna === 0) {
+                    celula.classList.add('rotulo');
+                    celula.textContent = '';
+                } else if(linha === 0) {
+                    celula.classList.add('rotulo');
+                    celula.textContent = letras[coluna-1];
+                } else if(coluna === 0) {
+                    celula.classList.add('rotulo');
+                    celula.textContent = linha;
+                } else {
+                    celula.classList.add('celula');
+                    celula.dataset.linha = linha - 1;
+                    celula.dataset.coluna = coluna - 1;
+                }
+
+                grade.appendChild(celula);
+            }
+        }
+
+        return grade;
+    }
+
+    function inicializarMatrizes() {
+        matrizJogador = [];
+        matrizOponente = [];
+
+        for(let i=0; i<linhas; i++) {
+            matrizJogador.push(new Array(colunas).fill(0));
+            matrizOponente.push(new Array(colunas).fill(0));
+        }
+    }
+
+    function posicionarNavios(matriz) {
+        const navios = [
+            {nome: "Porta-aviões", tamanho: 5},
+            {nome: "Navio-tanque", tamanho: 4},
+            {nome: "Cruzador", tamanho: 3},
+            {nome: "Submarino", tamanho: 3},
+            {nome: "Submarino", tamanho: 3},
+            {nome: "Destróier", tamanho: 2},
+            {nome: "Destróier", tamanho: 2},
+        ];
+
+        for (let navio of navios) {
+            let colocado = false;
+
+            while (!colocado) {
+                const direcao = Math.random() < 0.5 ? 'horizontal' : 'vertical';
+                let linha = Math.floor(Math.random() * linhas);
+                let coluna = Math.floor(Math.random() * colunas);
+
+                if (direcao === 'horizontal') {
+                    if (coluna + navio.tamanho <= colunas) {
+                        let podeColocar = true;
+                        for (let c = coluna; c < coluna + navio.tamanho; c++) {
+                            if (matriz[linha][c] !== 0) {
+                                podeColocar = false;
+                                break;
+                            }
+                        }
+                        if (podeColocar) {
+                            for (let c = coluna; c < coluna + navio.tamanho; c++) {
+                                matriz[linha][c] = 1;
+                            }
+                            colocado = true;
+                        }
+                    }
+                } else {
+                    if (linha + navio.tamanho <= linhas) {
+                        let podeColocar = true;
+                        for (let l = linha; l < linha + navio.tamanho; l++) {
+                            if (matriz[l][coluna] !== 0) {
+                                podeColocar = false;
+                                break;
+                            }
+                        }
+                        if (podeColocar) {
+                            for (let l = linha; l < linha + navio.tamanho; l++) {
+                                matriz[l][coluna] = 1;
+                            }
+                            colocado = true;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    function desenharTabuleiro(matriz, grade, mostrarNavios = false) {
+        grade.innerHTML = '';
+
+        for(let linha = 0; linha <= linhas; linha++) {
+            for(let coluna = 0; coluna <= colunas; coluna++) {
+                const celula = document.createElement('div');
+
+                if(linha === 0 && coluna === 0) {
+                    celula.classList.add('rotulo');
+                    celula.textContent = '';
+                } else if(linha === 0) {
+                    celula.classList.add('rotulo');
+                    celula.textContent = letras[coluna-1];
+                } else if(coluna === 0) {
+                    celula.classList.add('rotulo');
+                    celula.textContent = linha;
+                } else {
+                    celula.classList.add('celula');
+                    celula.dataset.linha = linha - 1;
+                    celula.dataset.coluna = coluna - 1;
+
+                    const valor = matriz[linha - 1][coluna - 1];
+                    if(valor === 1 && mostrarNavios) celula.classList.add('navio');
+                    else if(valor === 2) celula.classList.add('tiro-agua');
+                    else if(valor === 3) celula.classList.add('tiro-acerto');
+                }
+
+                grade.appendChild(celula);
+            }
+        }
+    }
+
+    let tirosRealizados = [];
+
+    function atirar() {
+        if (!turnoJogador) {
+            alert("Espere sua vez!");
+            return;
+        }
+
+        const input = document.getElementById('coordenadaInput');
+        let valor = input.value.trim().toUpperCase();
+
+        if(!/^[A-J](10|[1-9])$/.test(valor)) {
+            alert('Coordenada inválida! Use letras A-J e números 1-10 (ex: B4)');
+            return;
+        }
+
+        const letra = valor[0];
+        let numero = valor.slice(1);
+        numero = parseInt(numero, 10);
+
+        const linha = numero - 1;
+        const coluna = letras.indexOf(letra);
+
+        const chave = `${linha},${coluna}`;
+
+        if(tirosRealizados.includes(chave)) {
+            alert('Você já atirou nessa posição!');
+            return;
+        }
+
+        tirosRealizados.push(chave);
+
+        if(matrizOponente[linha][coluna] === 1) {
+            matrizOponente[linha][coluna] = 3; // acerto
+            status.textContent = 'Acertou um navio! Jogue novamente.';
+            desenharTabuleiro(matrizOponente, gradeOponente, false);
+
+            if(verificarVitoria(matrizOponente)) {
+                alert('Parabéns! Você afundou todos os navios do oponente!');
+                status.textContent = 'Você venceu!';
+                turnoJogador = false;
+                return;
+            }
+        } else if(matrizOponente[linha][coluna] === 0) {
+            matrizOponente[linha][coluna] = 2; // água
+            status.textContent = 'Água! Vez do oponente.';
+            desenharTabuleiro(matrizOponente, gradeOponente, false);
+
+            turnoJogador = false;  
+
+            setTimeout(() => {
+                atirarOponente();
+            }, 1000);
+        } else {
+            status.textContent = 'Posição já atingida.';
+            return;
+        }
+
+        input.value = '';
+    }
+
+    function atirarOponente() {
+        if (turnoJogador) return; 
+
+        let linha, coluna, chave;
+        do {
+            linha = Math.floor(Math.random() * linhas);
+            coluna = Math.floor(Math.random() * colunas);
+            chave = `${linha},${coluna}`;
+        } while(tirosRealizados.includes(chave));
+
+        tirosRealizados.push(chave);
+
+        if(matrizJogador[linha][coluna] === 1) {
+            matrizJogador[linha][coluna] = 3; // acerto
+            status.textContent = 'Oponente acertou seu navio!';
+
+            desenharTabuleiro(matrizJogador, gradeJogador, true);
+
+            if(verificarVitoria(matrizJogador)) {
+                alert('Que pena! O oponente afundou todos os seus navios.');
+                status.textContent = 'Você perdeu!';
+                turnoJogador = false;
+                return;
+            }
+
+            setTimeout(() => {
+                atirarOponente();
+            }, 1000);
+
+        } else if(matrizJogador[linha][coluna] === 0) {
+            matrizJogador[linha][coluna] = 2; // água
+            status.textContent = 'Oponente errou (água).';
+
+            desenharTabuleiro(matrizJogador, gradeJogador, true);
+
+            turnoJogador = true;
+            status.textContent = 'Sua vez!';
+        }
+    }
+
+    function verificarVitoria(matriz) {
+        for(let linha=0; linha<linhas; linha++) {
+            for(let coluna=0; coluna<colunas; coluna++) {
+                if(matriz[linha][coluna] === 1) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    function iniciarJogo() {
+        tirosRealizados = [];
+        turnoJogador = true;
+        status.textContent = 'Posicione os navios (feito automaticamente). Sua vez!';
+
+        inicializarMatrizes();
+        posicionarNavios(matrizJogador);
+        posicionarNavios(matrizOponente);
+
+        desenharTabuleiro(matrizJogador, gradeJogador, true);
+        desenharTabuleiro(matrizOponente, gradeOponente, false);
+    }
+
+    btnComecar.addEventListener('click', () => {
+        telaInicial.style.display = 'none';
+        iniciarJogo();
+    });
+
+    btnReiniciar.addEventListener('click', () => {
+        iniciarJogo();
+    });
+
+
+</script>
 </body>
 </html>
